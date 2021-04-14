@@ -114,8 +114,7 @@ try :
             #Get Time Local
             now = datetime.datetime.now()
 
-            #SGH
-            agodays =now-datetime.timedelta(weeks=4)
+
             
             #PCB Signal Manual Control
             """
@@ -131,7 +130,7 @@ try :
             suni = sunpanelvol.current()
             sunp = sunpanelvol.power()
             sunshunt = sunpanelvol.shunt_voltage() 
-            suncalv = sunshunt*30000.3855422
+            suncalv = sunshunt*24000.3855422
             
                         
             inverter1v = invertervol1.voltage()
@@ -228,7 +227,8 @@ try :
             cur.execute(sql)
 
             
-            ##SGH
+            ##SGH_delete log DB in 4 weeks
+            agodays =now-datetime.timedelta(weeks=4)
             deletesql="delete from nemosys where time <='"+agodays.strftime('%Y-%m-%d %H:%M:%S')+"'"
             cur.execute(deletesql)
             
