@@ -24,8 +24,8 @@ import pymysql
 
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(13, GPIO.OUT)  ##PCB Signal Pin##
-GPIO.output(13, GPIO.LOW) ##PCB Signal Default##
+GPIO.setup(15, GPIO.OUT)  ##PCB Signal Pin##
+GPIO.output(15, GPIO.LOW) ##PCB Signal Default##
 pcbsignal = 0 ##If PCB Signal HIGH, change to 1.  If PCB Signal LOW, change to 0
 
 #FirebaseSetting
@@ -118,7 +118,7 @@ try :
             
             #PCB Signal Manual Control
             """
-            GPIO.output(13,GPIO.HIGH)
+            GPIO.output(15,GPIO.HIGH)
             """
             
             #Schedule module run
@@ -241,12 +241,12 @@ try :
             #Signal Control
             if(suncalv<200000) : #Result of 2 channel integral has to satisfy under 400V
                                  #WARNING : it can be over 400V because of Sensor accuracy
-                GPIO.output(13, GPIO.HIGH) ##PCB Signal HIGH##
+                GPIO.output(15, GPIO.HIGH) ##PCB Signal HIGH##
                 print("PCB SIGNAL HIGH")
                 pcbsignal = 1
                 print("pcbsignal = 1")
             else :
-                GPIO.output(13, GPIO.LOW)
+                GPIO.output(15, GPIO.LOW)
                 print("PCB SIGNAL LOW")
                 pcbsignal = 0
                 print("pcbsignal = 0")
