@@ -35,7 +35,7 @@ GPIO.output(15, GPIO.HIGH) ##PCB Signal Default Must Be HIGH!!##
 pcbsignal = 0 ##If PCB Signal HIGH, change to 1.  If PCB Signal LOW, change to 0
 
 #FirebaseSetting
-cred = credentials.Certificate("/home/pi/nemosystem-f42f9-firebase-adminsdk-iv3rx-c71243309b.json")
+cred = credentials.Certificate("/home/pi/nemoaspts-firebase-adminsdk-brxci-78896493bf.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -99,7 +99,7 @@ suncalv = 0
 Dev_Current = 0
 Development = 0
 Current_list = []
-
+Max_Current = 0
 
 #When new day start, initialize daystart to 0
 def initdaystart():
@@ -131,6 +131,8 @@ def Current():
     global Dev_Current
     global Development
     global Current_list
+    global Max_Current
+    
     Current_list = []
     seconds =(datetime.datetime.now()+datetime.timedelta(seconds=2)).second
     while seconds != datetime.datetime.now().second:
@@ -138,14 +140,14 @@ def Current():
         current_current = ConvertCurrent(current_level,2)
         Current_list.append(current_current)
     
-    if(max(Current_list)<1.5 and suncalv<145000):   
+    if(Max_Current<1.5 and suncalv<145000):   
         Dev_Current = 10
-    elif(max(Current_list)<1.5 and suncalv>145000):
+    elif(Max_Current<1.5 and suncalv>145000):
         Dev_Current = 0
         print("err")
         #first 20 seconds for ready to run can be displayed as Err.
-    elif (max(Current_list)>1.5 and suncalv>110000) :
-        print(max(Current_list))
+    elif (Max_Current>1.5 and suncalv>110000) :
+        print(Max_Current)
         Dev_Current = 10
         Development += 1
         print("ok")    
@@ -283,7 +285,7 @@ try :
 
             #insert sql
             if (len(Current_list)!=0) :
-              sql="insert into test (id,time,suncalv,Development,pcbsignal,current) values('system1','"+now.strftime("%Y-%m-%d %H:%M:%S")+"',"+str(suncalv)+","+str(Development)+","+str(pcbsignal)+","+str(max(Current_list))+")"
+              sql="insert into test (id,time,suncalv,Development,pcbsignal,current) values('system1','"+now.strftime("%Y-%m-%d %H:%M:%S")+"',"+str(suncalv)+","+str(Development)+","+str(pcbsignal)+","+str(Max_Current)+")"
               cur.execute(sql)
             else :
               sql="insert into test (id,time,suncalv,Development,pcbsignal) values('system1','"+now.strftime("%Y-%m-%d %H:%M:%S")+"',"+str(suncalv)+","+str(Development)+","+str(pcbsignal)+")"
@@ -328,7 +330,7 @@ try :
             if (len(Current_list)!=0) :
               doc_ref1.set({
                 'id' : "system1", 'time' : utc_now , 'sunvoltage' : suncalv, 'invertervoltage1' : Dev_Current , 'invertervoltage2' : 10 ,
-                'invertervoltage3' : 10, 'MPPtime' : Development , 'pcbsignal' : pcbsignal, 'max_current' : max(Current_list)
+                'invertervoltage3' : 10, 'MPPtime' : Development , 'pcbsignal' : pcbsignal, 'max_current' : Max_Current
                 })
             else :
               doc_ref1.set({
